@@ -36,25 +36,24 @@ def read_input(filename):
 
 	return commands
 
-
-def sum_dict(d, total_sum):
+def sum_dict(d, total_sum, sum_list):
 	if type(d) == int:
 		val = d
 	elif type(d) == dict:
 		val = 0
-		for _, sd in d.items():
-			sval, total_sum = sum_dict(sd, total_sum)
+		total_sum_dict = {}
+		for n, sd in d.items():
+			sval, total_sum, sum_list = sum_dict(sd, total_sum, sum_list)
 			val += sval
 
 		if val <= 100000:
 			total_sum += val
 
-	return val, total_sum
+		sum_list.append(val)
 
+	return val, total_sum, sum_list
 
-
-
-def part_1(filename):
+def run(filename):
 	data = read_input(filename)
 	tree = {}
 	current = tree
@@ -68,17 +67,14 @@ def part_1(filename):
 			elif arg == "..":
 				if len(path_steps) > 0:
 					current = path_steps[-1]
-					path_steps = path_steps[:-2]
+					path_steps = path_steps[:-1]
 				else:
 					print(path_steps)
 			else:
-				#current.setdefault(arg, {})
-				try:
-					current[arg]
-					path_steps.append(current)
-					current = current[arg]
-				except:
-					pass
+				current.setdefault(arg, {})
+				current[arg]
+				path_steps.append(current)
+				current = current[arg]
 
 		elif cmd == "ls":
 			for t, n in arg:
@@ -87,22 +83,24 @@ def part_1(filename):
 				else:
 					current[n] = int(t)
 
+	return sum_dict(tree, 0, [])
 
-	print(json.dumps(tree, indent=2))
+def part_1(filename):
+	v, total_sum, sum_list = run(filename)
 
-	v, total_sum = sum_dict(tree, 0)
-
-	print(">> ", total_sum)
+	print("1 >> ", total_sum)
 
 
 def part_2(filename):
-	data = read_input(filename)
+	v, total_sum, sum_list = run(filename)
 
-	print(">> ", 0)
+	req = 30000000 - (70000000 - v)
+	print("  r > ", req)
+	print("2 >> ", min([k for k in sum_list if k >= req]))
 
 
 if __name__ == '__main__':
 	part_1("data_test")
 	part_1("data")
-	#part_2("data_test")
-	#part_2("data")
+	part_2("data_test")
+	part_2("data")
