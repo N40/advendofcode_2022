@@ -1,0 +1,5 @@
+
+# rust project
+*/target/
+*/.idea
+*/Cargo.lock
