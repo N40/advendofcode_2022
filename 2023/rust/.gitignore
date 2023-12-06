@@ -1,0 +1,9 @@
+
+# rust project
+*/target/
+*/.DS_Store
+*/Cargo.lock
+target
+.idea
+Cargo.lock
+.DS_Store
